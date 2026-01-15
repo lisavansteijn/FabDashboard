@@ -1,10 +1,14 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-  themes: nord --default, abyss --prefersdark, cupcake, dracula;
+  themes:
+    nord --default,
+    abyss --prefersdark,
+    cupcake,
+    dracula;
   root: ":root";
-  include: ;
-  exclude: ;
-  prefix: ;
+  include:;
+  exclude:;
+  prefix:;
   logs: true;
 }
 @utility btn {

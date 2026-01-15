@@ -72,4 +72,6 @@ yarn preview
 bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+# When committing:
+A couple of things to note when committing:
+1. Currently the project is using Husky, which means that you'll get lint errors. You may run "pnpm lint:fix" to solve it.

@@ -1,14 +1,40 @@
+import antfu from "@antfu/eslint-config";
+
+// @ts-check
 import withNuxt from "./.nuxt/eslint.config.mjs";
 
 export default withNuxt(
-	// your custom flat configs go here, for example:
-	// {
-	//   files: ['**/*.ts', '**/*.tsx'],
-	//   rules: {
-	//     'no-console': 'off' // allow console.log in TypeScript files
-	//   }
-	// },
-	// {
-	//   ...
-	// }
+  antfu({
+    type: "app",
+    vue: true,
+    typescript: true,
+    formatters: true,
+    stylistic: {
+      indent: 2,
+      semi: true,
+      quotes: "double",
+    },
+    ignores: ["README.md", ".pnpm-store/**", "**/migrations/*"],
+  }, {
+    rules: {
+      "vue/max-attributes-per-line": ["error", {
+        singleline: {
+          max: 2,
+        },
+        multiline: {
+          max: 1,
+        },
+      }],
+      "ts/no-redeclare": "off",
+      "ts/consistent-type-definitions": ["error", "type"],
+      "no-console": ["warn"],
+      "antfu/no-top-level-await": ["off"],
+      "node/prefer-global/process": ["off"],
+      "node/no-process-env": ["error"],
+      "unicorn/filename-case": ["error", {
+        case: "kebabCase",
+        ignore: ["README.md"],
+      }],
+    },
+  }),
 );
