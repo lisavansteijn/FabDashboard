@@ -27,6 +27,10 @@
       <!-- Dark Mode Toggle Placeholder -->
       <AppThemeToggler />
 
+      <div>
+        <AuthButton />
+      </div>
+
       <div class="dropdown dropdown-end">
         <div
           tabindex="0"

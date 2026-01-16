@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1768587281642,
-      "tag": "0000_fair_mad_thinker",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1768588601966,
-      "tag": "0001_luxuriant_grey_gargoyle",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1768594196450,
-      "tag": "0002_condemned_franklin_storm",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1768594516804,
-      "tag": "0003_mysterious_moon_knight",
+      "when": 1768598027432,
+      "tag": "0000_organic_dagger",
       "breakpoints": true
     }
   ]
