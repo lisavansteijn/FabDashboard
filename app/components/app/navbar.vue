@@ -23,6 +23,7 @@
       </ul>
     </div>
     <div class="navbar-end">
+      <a class="mx-2"><icon name="tabler:sun-high-filled" /> dark mode</a>
       <div class="dropdown dropdown-end">
         <div
           tabindex="0"

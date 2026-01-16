@@ -1,16 +1,11 @@
 @import "tailwindcss";
 @plugin "daisyui" {
   themes:
-    nord --default,
-    abyss --prefersdark,
-    cupcake,
-    dracula;
+    fantasy --default,
+    night --prefersdark;
   root: ":root";
   include:;
   exclude:;
   prefix:;
   logs: true;
-}
-@utility btn {
-  @apply rounded-full;
 }
