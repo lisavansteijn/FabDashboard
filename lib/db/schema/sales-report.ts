@@ -1,4 +1,5 @@
 import { int, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { user } from "./auth.ts";
 
 export const SalesReport = sqliteTable("sales_report", {
   id: int().primaryKey({ autoIncrement: true }),
@@ -13,6 +14,7 @@ export const SalesReport = sqliteTable("sales_report", {
   totalTax: real().notNull(),
   netUnits: int().notNull(),
   netSales: real().notNull(),
+  userId: int().notNull().references(() => user.id),
 });
 
 export type ProductSale = typeof SalesReport.$inferSelect;
