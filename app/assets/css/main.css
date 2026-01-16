@@ -1,11 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui" {
   themes:
-    fantasy --default,
-    night --prefersdark;
-  root: ":root";
-  include:;
-  exclude:;
-  prefix:;
-  logs: true;
+    light --default,
+    dark --prefersdark;
 }

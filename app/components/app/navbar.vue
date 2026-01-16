@@ -1,9 +1,10 @@
 <template>
-  <nav class="navbar bg-base-100 shadow-sm">
+  <nav class="navbar bg-primary bg-base-100 shadow-sm">
     <div class="navbar-start">
       <a class="btn btn-ghost text-xl"><nuxt-link to="/">The Fab(ulous) Dashboard</nuxt-link></a>
     </div>
     <div class="navbar-center hidden lg:flex">
+      <!-- Navigation Menu -->
       <ul class="menu menu-horizontal px-1">
         <li>
           <NuxtLink :to="{ name: 'trello-board' }">
@@ -23,7 +24,9 @@
       </ul>
     </div>
     <div class="navbar-end">
-      <a class="mx-2"><icon name="tabler:sun-high-filled" /> dark mode</a>
+      <!-- Dark Mode Toggle Placeholder -->
+      <AppThemeToggler />
+
       <div class="dropdown dropdown-end">
         <div
           tabindex="0"
