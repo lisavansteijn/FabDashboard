@@ -1,5 +1,7 @@
 import { int, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
+import { user } from "./auth.ts";
+
 export const Product = sqliteTable("product", {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
@@ -7,7 +9,7 @@ export const Product = sqliteTable("product", {
   price: real().notNull(),
   uploadedAt: int().notNull().$default(() => Date.now()),
   UpdatedAt: int().notNull().$default(() => Date.now()),
-  ImageUrl: text().notNull(),
+  userId: int().notNull().references(() => user.id),
   // Foreign Key Example:
   // categoryId: int().notNull().references(() => Category.id),
 });

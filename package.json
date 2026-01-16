@@ -20,6 +20,7 @@
     "@nuxtjs/color-mode": "4.0.0",
     "@tailwindcss/vite": "^4.1.18",
     "FabDashboard": "link:",
+    "better-auth": "^1.4.13",
     "concurrently": "^9.2.1",
     "drizzle-orm": "^0.45.1",
     "nuxt": "^4.2.2",
