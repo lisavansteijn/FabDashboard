@@ -12,13 +12,26 @@ npm install
 
 # pnpm
 pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
+
+If you want to setup the database, use:
+```bash
+pnpm drizzle-kit generate
+pnpm drizzle-kit migrate 
+
+(or if you dare doing this locally:)
+pnpm drizzle-kit push
+```
+- Note: use the same commands if you are updating your schemas!
+
+To check if your schemas came in correctly, simply:
+
+```bash
+pnpm drizzle-kit studio
+```
+and it will show a webpage showcasing your tables :)
+
+
 
 ## Development Server
 
@@ -75,3 +88,4 @@ bun run preview
 # When committing:
 A couple of things to note when committing:
 1. Currently the project is using Husky, which means that you'll get lint errors. You may run "pnpm lint:fix" to solve it.
+
