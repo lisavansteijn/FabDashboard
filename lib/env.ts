@@ -4,7 +4,8 @@ import { z } from "zod";
 
 const EnvSchema = z.object({
   NODE_ENV: z.string(),
-  DB_FILE_NAME: z.string(),
+  TURSO_DATABASE_URL: z.string(),
+  TURSO_AUTH_TOKEN: z.string(),
   BETTER_AUTH_SECRET: z.string(),
   BETTER_AUTH_URL: z.string(),
   AUTH_GITHUB_CLIENT_ID: z.string(),

@@ -8,6 +8,13 @@
       "when": 1768598027432,
       "tag": "0000_organic_dagger",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1768655967223,
+      "tag": "0001_round_golden_guardian",
+      "breakpoints": true
     }
   ]
 }

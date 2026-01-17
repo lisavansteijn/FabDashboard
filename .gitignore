@@ -27,4 +27,5 @@ logs
 lib/db/migrations/
 
 # SQLite database file
-fab.db
+*.db
+local.db

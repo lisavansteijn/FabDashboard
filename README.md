@@ -14,26 +14,28 @@ npm install
 pnpm install
 ```
 
-If you want to setup the database, use:
+## Making changes to the (local) database? Do the following:
+
+*(If on windows, get WSL and open the WSL terminal)*
+- Also make sure to have Turso CLI installed!
+
 ```bash
+(in WSL if applicable:)
+turso dev --db-file local.db
+
 pnpm drizzle-kit generate
-pnpm drizzle-kit migrate 
-(or use my function: pnpm migrate)
-
-(or if you dare doing this locally:)
-pnpm drizzle-kit push
+pnpm drizzle-kit migrate
 ```
-- Note: use the same commands if you are updating your schemas!
 
-To check if your schemas came in correctly, simply:
+Done! To check if your tables were generated/migrated succesfully:
 
 ```bash
 pnpm drizzle-kit studio
 ```
-and it will show a webpage showcasing your tables :)
 
-To
+Or get the SQLite viewer in VS code extensions for easier access 😉!
 
+**Note:** If you made migrations, *rerun the nuxt dev build with pnpm run dev*
 
 ## Development Server
 
