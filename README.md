@@ -18,6 +18,7 @@ If you want to setup the database, use:
 ```bash
 pnpm drizzle-kit generate
 pnpm drizzle-kit migrate 
+(or use my function: pnpm migrate)
 
 (or if you dare doing this locally:)
 pnpm drizzle-kit push
@@ -31,6 +32,7 @@ pnpm drizzle-kit studio
 ```
 and it will show a webpage showcasing your tables :)
 
+To
 
 
 ## Development Server
