@@ -1,6 +1,6 @@
 import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-import { user } from "./auth.ts";
+import { user } from "./auth";
 import { Product } from "./product";
 
 export const ProductImage = sqliteTable("product_image", {

@@ -1,6 +1,6 @@
 import { int, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-import { user } from "./auth.ts";
+import { user } from "./auth";
 
 export const Product = sqliteTable("product", {
   id: int().primaryKey({ autoIncrement: true }),
