@@ -1,7 +1,9 @@
 <template>
   <nav class="navbar bg-primary bg-base-100 shadow-sm">
     <div class="navbar-start">
-      <a class="btn btn-ghost text-xl"><nuxt-link to="/">The Fab(ulous) Dashboard</nuxt-link></a>
+      <nuxt-link to="/" class="btn btn-ghost text-xl">
+        The Fab(ulous) Dashboard
+      </nuxt-link>
     </div>
     <div class="navbar-center hidden lg:flex">
       <!-- Navigation Menu -->

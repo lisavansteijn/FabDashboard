@@ -1,3 +1,9 @@
+<script lang="ts" setup>
+// Initialize auth store on layout load
+const authStore = useAuthStore();
+await authStore.init();
+</script>
+
 <template>
   <div class="flex min-h-screen flex-col">
     <AppNavbar />
