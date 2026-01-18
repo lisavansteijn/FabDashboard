@@ -3,7 +3,10 @@ const authStore = useAuthStore();
 </script>
 
 <template>
-  <div v-if="authStore.loading !== true && authStore.user" class="dropdown dropdown-end dropdown-hover">
+  <div
+    v-if="authStore.loading === false && authStore.user"
+    class="dropdown dropdown-end dropdown-hover"
+  >
     <div
       tabindex="0"
       role="button"

@@ -1,34 +1,25 @@
 <script lang="ts" setup>
-const { data: tasks, error, status } = await useFetch("/api/tasks", { lazy: true });
+const authStore = useAuthStore();
 </script>
 
 <template>
-  <div>
-    <div v-if="status === 'pending'">
-      <div aria-busy="true">
-        Loading ...
-      </div>
-    </div>
-    <div v-else-if="error">
-      Error: {{ error.statusMessage }}
-    </div>
-    <div v-else>
-      <div
-        v-for="task in tasks"
-        :key="task.id"
-        class="card card-border bg-base-100 w-96"
-      >
-        <div class="card-body">
-          <h2 class="card-title">
-            {{ task.title }}
-          </h2>
-          <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
-          <div class="card-actions justify-end">
-            <button class="btn btn-primary">
-              Buy Now
-            </button>
-          </div>
-        </div>
+  <div class="hero bg-base-300 container mx-auto mt-4">
+    <div class="hero-content text-center min-h-96">
+      <div class="max-w-md">
+        <h1 class="text-5xl font-bold">
+          The Fab(ulous) Dashboard!
+        </h1>
+        <p class="py-6">
+          Make tracking your sales and project management easier with our integrated dashboard featuring a Trello-like and insightful sales analytics.
+        </p>
+        <AuthButton v-if="!authStore.user" />
+        <NuxtLink
+          v-else
+          to="/dashboard"
+          class="btn btn-primary"
+        >
+          Start Logging
+        </NuxtLink>
       </div>
     </div>
   </div>
