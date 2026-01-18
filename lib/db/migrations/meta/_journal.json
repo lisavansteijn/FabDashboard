@@ -15,6 +15,13 @@
       "when": 1768655967223,
       "tag": "0001_round_golden_guardian",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1768739377864,
+      "tag": "0002_happy_sabra",
+      "breakpoints": true
     }
   ]
 }
