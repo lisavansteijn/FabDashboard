@@ -18,7 +18,7 @@ const authStore = useAuthStore();
           to="/dashboard"
           class="btn btn-primary"
         >
-          Start Logging
+          Start Dashboarding
         </NuxtLink>
       </div>
     </div>
