@@ -3,10 +3,10 @@ const colorMode = useColorMode();
 
 const isDark = computed({
   get() {
-    return colorMode.value === "dark";
+    return colorMode.value === "dracula";
   },
   set(value) {
-    colorMode.preference = value ? "dark" : "light";
+    colorMode.preference = value ? "dracula" : "cupcake";
   },
 });
 </script>

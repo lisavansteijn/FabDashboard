@@ -17,7 +17,7 @@ pnpm install
 ## Making changes to the (local) database? Do the following:
 
 *(If on windows, get WSL and open the WSL terminal)*
-- Also make sure to have Turso CLI installed!
+- Make sure to have Turso CLI installed!
 
 ```bash
 (in WSL if applicable:)
