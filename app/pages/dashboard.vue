@@ -43,7 +43,7 @@ function toggleSidebar() {
           <sidebar-button
             label="Sales Insight"
             icon="tabler:chart-bar"
-            href="/dashboard"
+            href="/dashboard/insights"
           />
           <sidebar-button
             label="Trello"
@@ -63,7 +63,7 @@ function toggleSidebar() {
     </div>
     <!-- dashboard content -->
     <div class="flex-1 bg-base-200">
-      Dashboard Content
+      <NuxtPage />
     </div>
   </div>
 </template>
