@@ -1,8 +1,21 @@
-# Nuxt Minimal Starter
+# The Fab(ulous) dashboard!
+Looking for a way to display your fab store sales insights into a much better experience? Then look no further!
+
+The dashboard is tailored to show specific details from your imported CSV file. It contains the following features:
+
+- Generic sales insights
+- Insightful trends over the months
+- A trello board!
+
+See the live version here: https://fab-dashboard-beryl.vercel.app/
+
+# Programmer stuff:
+
+## Nuxt Minimal Starter
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-## Setup
+### Setup
 
 Make sure to install dependencies:
 
@@ -14,7 +27,7 @@ npm install
 pnpm install
 ```
 
-## Making changes to the (local) database? Do the following:
+### Making changes to the (local) database? Do the following:
 
 *(If on windows, get WSL and open the WSL terminal)*
 - Make sure to have Turso CLI installed!
@@ -37,7 +50,7 @@ Or get the SQLite viewer in VS code extensions for easier access 😉!
 
 **Note:** If you made migrations, *rerun the nuxt dev build with pnpm run dev*
 
-## Development Server
+### Development Server
 
 Start the development server on `http://localhost:3000`:
 
@@ -55,7 +68,7 @@ yarn dev
 bun run dev
 ```
 
-## Production
+### Production
 
 Build the application for production:
 
@@ -89,7 +102,7 @@ yarn preview
 bun run preview
 ```
 
-# When committing:
+## When committing:
 A couple of things to note when committing:
 1. Currently the project is using Husky, which means that you'll get lint errors. You may run "pnpm lint:fix" to solve it.
 
