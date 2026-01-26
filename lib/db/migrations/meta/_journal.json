@@ -22,6 +22,27 @@
       "when": 1768739377864,
       "tag": "0002_happy_sabra",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1769096813973,
+      "tag": "0003_easy_sharon_ventura",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1769161818668,
+      "tag": "0004_tiny_shocker",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1769175840395,
+      "tag": "0005_ordinary_lenny_balinger",
+      "breakpoints": true
     }
   ]
 }
