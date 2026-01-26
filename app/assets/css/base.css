@@ -1,0 +1,16 @@
+/* Override the default bar color to the primary color (Weird hack, I know...) */
+[class*="-bar"] {
+  fill: var(--color-primary) !important;
+}
+
+/* override the default legend bullet color to the primary color */
+[class*="-legendItem"] > svg > path {
+  stroke: var(--color-primary) !important;
+  fill: var(--color-primary) !important;
+}
+
+[class*="-tick"] text,
+[class*="-legendItemLabel"] {
+  fill: var(--color-base-content) !important;
+  color: var(--color-base-content) !important;
+}

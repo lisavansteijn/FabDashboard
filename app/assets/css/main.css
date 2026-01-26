@@ -1,4 +1,17 @@
 @import "tailwindcss";
+/* Option 1: Override fonts globally using CSS variables */
+
+@theme {
+  --font-title: "Outfit", system-ui, sans-serif;
+  --font-sans: "'Work Sans', system-ui, sans-serif";
+  --vis-color0: var(--color-primary) !important;
+  --vis-pattern-fill: var(--color-primary) !important;
+  --vis-color-main: var(--color-primary) !important;
+  --custom-primary: var(--color-primary) !important;
+  --vis-axis-tick-label-color: var(--color-base-content) !important;
+}
+
+/* Option 2: Override fonts in DaisyUI themes */
 @plugin "daisyui" {
   themes:
     light --default,
@@ -6,3 +19,29 @@
     dracula,
     cupcake;
 }
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --font-title: "Outfit", system-ui, sans-serif;
+  --font-sans: "'Work Sans', system-ui, sans-serif";
+}
+
+@plugin "daisyui/theme" {
+  name: "dark";
+  --font-title: "Outfit", system-ui, sans-serif;
+  --font-sans: "'Work Sans', system-ui, sans-serif";
+}
+
+@plugin "daisyui/theme" {
+  name: "dracula";
+  --radius-field: 2rem;
+}
+@plugin "daisyui/theme" {
+  name: "cupcake";
+  --radius-field: 2rem;
+}
+/* @import "@nuxt/ui"; */
+
+/* After all that, we import our own css classes! */
+@import "./base.css";
