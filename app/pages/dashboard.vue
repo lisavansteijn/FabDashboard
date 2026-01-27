@@ -68,7 +68,10 @@ function toggleSidebar() {
     </div>
     <!-- dashboard content -->
     <div class="flex-1 bg-base-200">
-      <NuxtPage />
+      <div class="container max-w-4xl mx-auto mt-4 pt-4">
+        <AppBreadcrumbs />
+        <NuxtPage />
+      </div>
     </div>
   </div>
 </template>
