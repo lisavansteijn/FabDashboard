@@ -28,6 +28,4 @@ lib/db/migrations/
 
 # SQLite database file
 *.db
-local.db
-local.db-shm
-local.db-wal
+local.db*
