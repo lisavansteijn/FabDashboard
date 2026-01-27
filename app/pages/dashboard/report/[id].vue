@@ -2,7 +2,7 @@
 import { BarChart, LegendPosition } from "vue-chrts";
 
 defineOptions({
-  tags: ["barcharts", "vertical"],
+  tags: ["barcharts", "vertical", "group"],
 });
 withDefaults(
   defineProps<{
@@ -24,16 +24,20 @@ const { data: insights, error, pending } = await useAsyncData(`insight:${route.p
 const totalRevenueData = computed(() => {
   return insights.value?.[0]?.totalRevenue || [];
 });
-
 const totalSalesData = computed(() => {
   return insights.value?.[0]?.totalSales || [];
 });
-
+const averageRevenuePerProductData = computed(() => {
+  return insights.value?.[0]?.averageRevenuePerProduct || [];
+});
+const licenseTypeData = computed(() => {
+  return insights.value?.[0]?.LicenseType || [];
+});
 // Revenue categories for the chart
 const RevenueCategories = computed(() => ({
   value: {
     name: "Revenue",
-    color: "#22c55e",
+    color: "var(--color-primary)",
   },
 }));
 
@@ -41,14 +45,53 @@ const RevenueCategories = computed(() => ({
 const SalesCategories = computed(() => ({
   value: {
     name: "Sales",
-    color: "#22c55e",
+    color: "var(--color-primary)",
+  },
+}));
+// Revenue categories for the chart
+const AverageRevenuePerProductCategories = computed(() => ({
+  value: {
+    name: "Average Revenue per Product",
+    color: "var(--color-primary)",
+  },
+}));
+// Revenue categories for the chart
+const LicenseTypeCategories = computed(() => ({
+  professional: {
+    name: "Professional",
+    color: "var(--color-primary)",
+  },
+  personal: {
+    name: "Personal",
+    color: "var(--color-secondary)",
   },
 }));
 
 // X formatter - uses the actual month from the data
 // We keep this globally for now, as all stats are using the same months anyways.
-function xFormatter(i: number): string {
+function totalRevenueXFormatter(i: number): string {
   const data = totalRevenueData.value;
+  if (data && data[i]) {
+    return data[i].month || "";
+  }
+  return "";
+}
+function averageRevenuePerProductXFormatter(i: number): string {
+  const data = averageRevenuePerProductData.value;
+  if (data && data[i]) {
+    return data[i].month || "";
+  }
+  return "";
+}
+function totalSalesXFormatter(i: number): string {
+  const data = totalSalesData.value;
+  if (data && data[i]) {
+    return data[i].month || "";
+  }
+  return "";
+}
+function licenseTypeXFormatter(i: number): string {
+  const data = licenseTypeData.value;
   if (data && data[i]) {
     return data[i].month || "";
   }
@@ -59,7 +102,7 @@ const yFormatter = (tick: number) => tick.toString();
 </script>
 
 <template>
-  <div class="container max-w-4xl mx-auto mt-4 pt-10">
+  <div>
     <h1 class="text-4xl font-bold mb-2 pb-4">
       🛒 Sales Report Overview
     </h1>
@@ -94,7 +137,7 @@ const yFormatter = (tick: number) => tick.toString();
     </h1>
 
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <div class="card bg-base-100 w-full shadow-sm p-4 my-4">
+      <div class="card bg-base-100 w-full shadow-sm p-4 my-2">
         <h3 class="text-lg font-semibold">
           Total Revenue by Month
         </h3>
@@ -104,17 +147,37 @@ const yFormatter = (tick: number) => tick.toString();
           :height="300"
           :categories="RevenueCategories"
           :y-axis="['value']"
-          :x-num-ticks="6"
-          :radius="4"
+          :x-num-ticks="15"
+          :radius="10"
           :y-grid-line="true"
-          :x-formatter="xFormatter"
+          :x-formatter="totalRevenueXFormatter"
           :y-formatter="yFormatter"
           :legend-position="LegendPosition.TopRight"
           :hide-legend="false"
         />
       </div>
 
-      <div class="card bg-base-100 w-full shadow-sm p-4 my-4">
+      <div class="card bg-base-100 w-full shadow-sm p-4 my-2">
+        <h3 class="text-lg font-semibold">
+          Average Revenue per Product
+        </h3>
+        <BarChart
+          v-if="averageRevenuePerProductData && averageRevenuePerProductData.length > 0"
+          :data="averageRevenuePerProductData"
+          :height="300"
+          :categories="AverageRevenuePerProductCategories"
+          :y-axis="['value']"
+          :x-num-ticks="15"
+          :radius="10"
+          :y-grid-line="true"
+          :x-formatter="averageRevenuePerProductXFormatter"
+          :y-formatter="yFormatter"
+          :legend-position="LegendPosition.TopRight"
+          :hide-legend="false"
+        />
+      </div>
+
+      <div class="card bg-base-100 w-full shadow-sm p-4 my-2">
         <h3 class="text-lg font-semibold">
           Total Sales by Month
         </h3>
@@ -124,22 +187,52 @@ const yFormatter = (tick: number) => tick.toString();
           :height="300"
           :categories="SalesCategories"
           :y-axis="['value']"
-          :x-num-ticks="6"
-          :radius="4"
+          :x-num-ticks="15"
+          :radius="10"
           :y-grid-line="true"
-          :x-formatter="xFormatter"
+          :x-formatter="totalSalesXFormatter"
+          :y-formatter="yFormatter"
+          :legend-position="LegendPosition.TopRight"
+          :hide-legend="false"
+        />
+      </div>
+
+      <div class="card bg-base-100 w-full shadow-sm p-4 my-2">
+        <h3 class="text-lg font-semibold">
+          Personal vs Professional License
+        </h3>
+        <BarChart
+          v-if="licenseTypeData && licenseTypeData.length > 0"
+          :data="licenseTypeData"
+          :height="300"
+          :categories="LicenseTypeCategories"
+          :y-axis="['professional', 'personal']"
+          :group-padding="0"
+          :bar-padding="0.1"
+          :x-num-ticks="6"
+          :radius="10"
+          :y-grid-line="true"
+          :x-formatter="licenseTypeXFormatter"
           :y-formatter="yFormatter"
           :legend-position="LegendPosition.TopRight"
           :hide-legend="false"
         />
       </div>
     </div>
-
+    <!--
     <div>
       <h1>Product Performance Table</h1>
       <p>
         This table shows the performance of each product in the report.
       </p>
+
+      <ul class="list-disc pl-6">
+        <li>Total Revenue (Lifetime / This Month / Last 30 Days)</li>
+        <li>Units Sold (same ranges)</li>
+        <li>Avg Revenue per Product</li>
+        <li>Personal vs Professional License Split</li>
+        <li>Conversion Proxy (sales ÷ products live)</li>
+      </ul>
 
       <ul class="list-disc pl-6">
         <li>Product name</li>
@@ -182,6 +275,6 @@ const yFormatter = (tick: number) => tick.toString();
         <li>Sales before/after price changes</li>
         <li>Average price of your top 20% sellers</li>
       </ul>
-    </div>
+    </div> -->
   </div>
 </template>

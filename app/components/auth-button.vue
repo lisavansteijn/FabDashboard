@@ -28,9 +28,10 @@ const authStore = useAuthStore();
       </li>
     </ul>
   </div>
+
   <button
     v-else
-    class="btn btn-primary"
+    class="btn bg-black text-white border-black"
     :disabled="authStore.loading"
     @click="authStore.signIn"
   >
