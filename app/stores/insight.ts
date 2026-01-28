@@ -7,7 +7,6 @@ export const useInsightStore = defineStore("useInsightStore", {
     processing: false, // whether the CSV is being processed
     processedCount: 0, // the number of rows processed
     totalCount: 0, // the total number of rows in the CSV
-    hasProcessed: false, // whether the CSV has been processed
     hasPressedSubmit: false, // whether the submit button has been pressed
   }),
   getters: {
@@ -20,9 +19,6 @@ export const useInsightStore = defineStore("useInsightStore", {
       this.errorMsg = "Error parsing CSV file... Please try again.";
       this.hasError = false;
       this.processing = false;
-      this.processedCount = 0;
-      this.totalCount = 0;
-      this.hasProcessed = false;
       this.hasPressedSubmit = false;
     },
     handleErrors(error: any) {

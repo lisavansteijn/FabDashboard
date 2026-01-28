@@ -10,7 +10,7 @@ import { useInsightStore } from "../../stores/insight";
 
 const { $csrfFetch } = useNuxtApp();
 const insightStore = useInsightStore();
-const { readFile, errorMsg, hasError, processing, processedCount, totalCount, hasProcessed, hasPressedSubmit } = storeToRefs(insightStore);
+const { readFile, errorMsg, hasError, processing, hasPressedSubmit } = storeToRefs(insightStore);
 
 const schema = z.object({
   csvFile: z
@@ -32,8 +32,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   insightStore.resetStore();
 
   try {
-    await readCSVFile(event.data.csvFile);
-    hasProcessed.value = true;
+    const csvDatas = await readCSVFile(event.data.csvFile);
+    // TODO: Turn this into a batch process, rather than hitting the database for each row.
+    await processCSVData(csvDatas);
     readFile.value = true;
 
     return await navigateTo({
@@ -42,70 +43,47 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
   catch (error: any) {
     insightStore.handleErrors(error);
-    hasProcessed.value = false;
   }
   finally {
     processing.value = false;
   }
 }
 
-async function readCSVFile(file: File): Promise<void> {
+async function readCSVFile(file: File): Promise<InsertSalesReport[]> {
   return new Promise((resolve, reject) => {
-    try {
-      Papa.parse(file, {
-        header: true,
-        delimiter: ",",
-        skipEmptyLines: true,
-        transformHeader: (header: string) => header.trim(),
-        transform: (value: string) => value.trim(),
-        complete: async (results: any) => {
-          try {
-            const rows = results.data.filter((row: any) => {
-              // Filter out empty rows
-              return row && Object.keys(row).length > 0 && row.Day;
-            });
+    processing.value = true;
 
-            totalCount.value = rows.length;
-            for (let i = 0; i < rows.length; i++) {
-              const val = rows[i];
-              // Process row...
-              const csvData: InsertSalesReport = {
-                day: val.Day ?? "",
-                source: val.Source ?? "",
-                listingTitle: val["Listing Title"] ?? "",
-                license: val.License ?? "",
-                basePrice: Number.parseFloat(val["Base Price"] ?? "0"),
-                totalVAT: Number.parseFloat(val["Total VAT"] ?? "0"),
-                totalTax: Number.parseFloat(val["Total Tax"] ?? "0"),
-                netUnits: Number.parseInt(val["Net Units"] ?? "0"),
-                netSales: Number.parseFloat(val["Net Sales"] ?? "0"),
-              };
+    Papa.parse(file, {
+      header: true,
+      delimiter: ",",
+      skipEmptyLines: true,
+      transformHeader: (header: string) => header.trim(),
+      transform: (value: string) => value.trim(),
+      complete: (results: any) => {
+        // Process row...
+        const csvDatas = results.data.map((val: any) => ({
+          day: val.Day ?? "",
+          source: val.Source ?? "",
+          listingTitle: val["Listing Title"] ?? "",
+          license: val.License ?? "",
+          basePrice: Number.parseFloat(val["Base Price"] ?? "0"),
+          totalVAT: Number.parseFloat(val["Total VAT"] ?? "0"),
+          totalTax: Number.parseFloat(val["Total Tax"] ?? "0"),
+          netUnits: Number.parseInt(val["Net Units"] ?? "0"),
+          netSales: Number.parseFloat(val["Net Sales"] ?? "0"),
+        }));
+          // processedCount.value++;
 
-              await processCSVData(csvData);
-              processedCount.value++;
-
-              // Yield to UI between batches
-              await new Promise(resolve => setTimeout(resolve, 10));
-            }
-
-            resolve();
-          }
-          catch (error) {
-            reject(error);
-          }
-        },
-        error: (err: any) => {
-          reject(err);
-        },
-      });
-    }
-    catch (err: any) {
-      reject(err);
-    }
+        resolve(csvDatas);
+      },
+      error: (err: any) => {
+        reject(err);
+      },
+    });
   });
 }
 
-async function processCSVData(data: InsertSalesReport): Promise<void> {
+async function processCSVData(data: InsertSalesReport[]): Promise<void> {
   try {
     // Send data to the server to be added to the database...
     await $csrfFetch(`/api/sales-report`, {
@@ -190,7 +168,7 @@ async function processCSVData(data: InsertSalesReport): Promise<void> {
     </div>
 
     <!-- if no file has been uploaded, show a message -->
-    <div v-if="!readFile && !hasProcessed" class="mt-4 text-center">
+    <div v-if="!readFile && !processing" class="mt-4 text-center">
       <p class="text-sm text-muted">
         Please upload a .CSV file to get started.
       </p>
@@ -206,12 +184,6 @@ async function processCSVData(data: InsertSalesReport): Promise<void> {
       <span>{{ errorMsg }}</span>
     </div>
 
-    <!-- if the CSV is being processed, show a loading spinner -->
-    <div v-if="processing" class="mt-4 text-center">
-      <span class="loading loading-spinner loading-md" />
-      <p class="text-sm text-muted mt-2">
-        Processing {{ processedCount }} of {{ totalCount }} rows...
-      </p>
-    </div>
+    <!-- TODO: Show the already existing insights here, and make the upload button a modal... -->
   </div>
 </template>

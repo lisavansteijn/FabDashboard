@@ -22,16 +22,16 @@ const { data: insights, error, pending } = await useAsyncData(`insight:${route.p
 
 // Computed to get the chart data
 const totalRevenueData = computed(() => {
-  return insights.value?.[0]?.totalRevenue || [];
+  return insights.value?.totalRevenue || [];
 });
 const totalSalesData = computed(() => {
-  return insights.value?.[0]?.totalSales || [];
+  return insights.value?.totalSales || [];
 });
 const averageRevenuePerProductData = computed(() => {
-  return insights.value?.[0]?.averageRevenuePerProduct || [];
+  return insights.value?.averageRevenuePerProduct || [];
 });
 const licenseTypeData = computed(() => {
-  return insights.value?.[0]?.LicenseType || [];
+  return insights.value?.licenseType || [];
 });
 // Revenue categories for the chart
 const RevenueCategories = computed(() => ({
@@ -103,6 +103,7 @@ const yFormatter = (tick: number) => tick.toString();
 
 <template>
   <div>
+    <!-- TODO: Turn this page into a potential filterable page, with years/months/etc. -->
     <h1 class="text-4xl font-bold mb-2 pb-4">
       🛒 Sales Report Overview
     </h1>
@@ -132,12 +133,12 @@ const yFormatter = (tick: number) => tick.toString();
       </div>
     </div>
 
-    <h1 class="text-4xl font-bold pb-4 pt-2">
+    <h1 class="text-4xl font-bold pb-4 pt-2 mb-4">
       Core Sales Metrics:
     </h1>
 
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <div class="card bg-base-100 w-full shadow-sm p-4 my-2">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div class="card bg-base-100 w-full shadow-sm p-4">
         <h3 class="text-lg font-semibold">
           Total Revenue by Month
         </h3>
@@ -157,7 +158,7 @@ const yFormatter = (tick: number) => tick.toString();
         />
       </div>
 
-      <div class="card bg-base-100 w-full shadow-sm p-4 my-2">
+      <div class="card bg-base-100 w-full shadow-sm p-4">
         <h3 class="text-lg font-semibold">
           Average Revenue per Product
         </h3>
@@ -177,7 +178,7 @@ const yFormatter = (tick: number) => tick.toString();
         />
       </div>
 
-      <div class="card bg-base-100 w-full shadow-sm p-4 my-2">
+      <div class="card bg-base-100 w-full shadow-sm p-4">
         <h3 class="text-lg font-semibold">
           Total Sales by Month
         </h3>
@@ -197,7 +198,7 @@ const yFormatter = (tick: number) => tick.toString();
         />
       </div>
 
-      <div class="card bg-base-100 w-full shadow-sm p-4 my-2">
+      <div class="card bg-base-100 w-full shadow-sm p-4">
         <h3 class="text-lg font-semibold">
           Personal vs Professional License
         </h3>
