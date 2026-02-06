@@ -1,57 +1,37 @@
 <script lang="ts" setup>
 import type { FormSubmitEvent } from "@nuxt/ui";
 import type { InsertSalesReport } from "~~/lib/db/schema/sales-report";
+import type { CvSchema } from "~~/lib/uploads/cv-schema";
 import Papa from "papaparse";
-import { storeToRefs } from "pinia";
-import { z } from "zod";
-import { ACCEPTED_CSV_TYPES } from "~~/lib/constants";
-
-import { useInsightStore } from "../../stores/insight";
+import { UseInsights } from "~~/app/compositions/insights";
 
 const { $csrfFetch } = useNuxtApp();
-const insightStore = useInsightStore();
-const { readFile, errorMsg, hasError, processing, hasPressedSubmit } = storeToRefs(insightStore);
+const Insights = new UseInsights();
 
-const schema = z.object({
-  csvFile: z
-    .instanceof(File, {
-      message: "Please select a .CSV file.",
-    })
-    .refine(file => ACCEPTED_CSV_TYPES.has(file.type), {
-      message: "Please upload a valid CSV file (text/csv).",
-    }),
-});
-type Schema = z.output<typeof schema>;
-
-const schemaState = reactive<Partial<Schema>>({
-  csvFile: undefined,
-});
-
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  schemaState.csvFile = event.data.csvFile;
-  insightStore.resetStore();
+async function onSubmit(event: FormSubmitEvent<CvSchema>) {
+  Insights.cvState.csvFile = event.data.csvFile;
+  Insights.resetStore();
 
   try {
     const csvDatas = await readCSVFile(event.data.csvFile);
-    // TODO: Turn this into a batch process, rather than hitting the database for each row.
     await processCSVData(csvDatas);
-    readFile.value = true;
+    Insights.readFile = true;
 
     return await navigateTo({
-      path: `/dashboard/report/${schemaState.csvFile?.name}`,
+      path: `/dashboard/report/${Insights.cvState.csvFile?.name}`,
     });
   }
   catch (error: any) {
-    insightStore.handleErrors(error);
+    Insights.handleErrors(error);
   }
   finally {
-    processing.value = false;
+    Insights.processing = false;
   }
 }
 
 async function readCSVFile(file: File): Promise<InsertSalesReport[]> {
   return new Promise((resolve, reject) => {
-    processing.value = true;
+    Insights.processing = true;
 
     Papa.parse(file, {
       header: true,
@@ -96,7 +76,7 @@ async function processCSVData(data: InsertSalesReport[]): Promise<void> {
     console.error("Error processing CSV row:", error);
     // Only set error state if it's a critical error
     if (error.message?.includes("401") || error.message?.includes("403") || error.message?.includes("422")) {
-      insightStore.handleErrors(error);
+      Insights.handleErrors(error);
       throw error; // Re-throw to stop processing
     }
   }
@@ -114,75 +94,109 @@ async function processCSVData(data: InsertSalesReport[]): Promise<void> {
       </p>
     </div>
 
-    <div class="mt-4 flex justify-center mx-auto">
-      <UForm
-        :schema="schema"
-        :state="schemaState"
-        class="space-y-4 w-64 bg-base-100 p-4 rounded-lg "
-        @submit="onSubmit"
-      >
-        <UFormField
-          name="csvFile"
-          label="Upload your .CSV file"
-          description=".CSV file (max. 2MB)"
-        >
-          <UFileUpload
-            v-slot="{ open, removeFile }"
-            v-model="schemaState.csvFile"
-            accept="text/csv"
-            class="mt-3"
-          >
-            <div class="flex flex-wrap items-center gap-3">
-              <UAvatar
-                size="lg"
-                icon="tabler:file"
-              />
-
-              <UButton
-                :label="schemaState.csvFile ? 'Change .CSV file' : 'Upload .CSV file'"
-                class="btn btn-secondary btn-outline"
-                @click="open()"
-              />
-            </div>
-
-            <p v-if="schemaState.csvFile" class="text-xs text-muted mt-1.5">
-              {{ schemaState.csvFile.name }}
-
-              <UButton
-                label="Remove"
-                class="btn btn-error btn-outline "
-                icon="tabler:trash"
-                @click="removeFile()"
-              />
-            </p>
-          </UFileUpload>
-        </UFormField>
+    <AppModal id="upload-csv-modal" title="Upload CSV">
+      <template #trigger>
         <UButton
-          type="submit"
-          label="Submit"
-          class="btn btn-primary mx-auto block"
+          label="Upload CSV"
+          class="btn btn-primary"
           icon="tabler:upload"
-          @click="hasPressedSubmit = true"
         />
-      </UForm>
-    </div>
+      </template>
+      <template #content>
+        <div class="mt-4 flex justify-center mx-auto">
+          <UForm
+            :schema="CvSchema"
+            :state="Insights.cvState"
+            class="space-y-4 w-64 bg-base-200 p-4 rounded-lg border-4 border-base-300"
+            @submit="onSubmit($event)"
+          >
+            <UFormField
+              name="csvFile"
+              label="Upload your .CSV file"
+              description=".CSV file (max. 2MB)"
+            >
+              <UFileUpload
+                v-slot="{ open, removeFile }"
+                v-model="Insights.cvState.csvFile"
+                accept="text/csv"
+                class="mt-3"
+              >
+                <div class="flex flex-wrap items-center gap-3">
+                  <UAvatar
+                    size="lg"
+                    icon="tabler:file"
+                  />
 
+                  <UButton
+                    :label="Insights.cvState.csvFile ? 'Change .CSV file' : 'Upload .CSV file'"
+                    class="btn btn-success btn-outline"
+                    @click="open()"
+                  />
+                </div>
+
+                <p v-if="Insights.cvState.csvFile" class="text-xs text-muted mt-1.5">
+                  {{ Insights.cvState.csvFile.name }}
+
+                  <UButton
+                    label="Remove"
+                    class="btn btn-error btn-outline "
+                    icon="tabler:trash"
+                    @click="removeFile()"
+                  />
+                </p>
+              </UFileUpload>
+            </UFormField>
+            <UButton
+              type="submit"
+              label="Submit"
+              class="btn btn-primary mx-auto block"
+              icon="tabler:upload"
+              @click="Insights.hasPressedSubmit = true"
+            />
+          </UForm>
+        </div>
+      </template>
+    </AppModal>
+
+    <div class="divider" />
+
+    <div class="bg-base-100 p-4 rounded-lg">
+      <div
+        v-if="Insights.hasError"
+        role="alert"
+        class="alert alert-error"
+      >
+        <Icon name="tabler:alert-circle" size="24" />
+        <span>{{ Insights.errorMsg }}</span>
+      </div>
+
+      <div
+        v-if="Insights.readFile"
+        role="alert"
+        class="alert alert-success"
+      >
+        <Icon name="tabler:check-circle" size="24" />
+        <span>File uploaded successfully!</span>
+      </div>
+
+      <div v-if="Insights.serverResponded" />
+    </div>
     <!-- if no file has been uploaded, show a message -->
-    <div v-if="!readFile && !processing" class="mt-4 text-center">
+    <!-- <div v-if="!readFile && !processing" class="mt-4 text-center">
       <p class="text-sm text-muted">
         Please upload a .CSV file to get started.
       </p>
-    </div>
+    </div> -->
 
     <!-- if results are in, show them off here... -->
-    <div
+    <!-- <div
       v-if="hasError"
       role="alert"
       class="alert alert-error"
     >
       <Icon name="tabler:alert-circle" size="24" />
       <span>{{ errorMsg }}</span>
-    </div>
+    </div> -->
 
     <!-- TODO: Show the already existing insights here, and make the upload button a modal... -->
   </div>
