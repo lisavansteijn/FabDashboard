@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { NUXT_PATHS } from "~~/lib/constants";
+
 const authStore = useAuthStore();
 </script>
 
@@ -21,7 +23,7 @@ const authStore = useAuthStore();
     </div>
     <ul tabindex="-1" class="menu dropdown-content bg-base-200 rounded-box z-1 w-52 p-2 shadow-sm">
       <li>
-        <NuxtLink to="/dashboard/sign-out">
+        <NuxtLink :to="NUXT_PATHS.get('SignOut')">
           <Icon name="tabler:logout-2" size="24" />
           Sign Out
         </NuxtLink>

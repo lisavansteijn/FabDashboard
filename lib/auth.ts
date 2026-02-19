@@ -27,7 +27,7 @@ export const auth = betterAuth({
     provider: "sqlite", // or "mysql", "sqlite"
   }),
   advanced: {
-    generateId: false,
+    generateId: false, // Use custom UUIDs for user and session IDs instead of auto-incrementing integers
   },
   socialProviders: {
     github: {

@@ -3,10 +3,13 @@ import type { FormSubmitEvent } from "@nuxt/ui";
 import type { InsertSalesReport } from "~~/lib/db/schema/sales-report";
 import type { CvSchema } from "~~/lib/uploads/cv-schema";
 import Papa from "papaparse";
-import { UseInsights } from "~~/app/compositions/insights";
+import { useInsights } from "~~/app/compositions/insights";
+import { buildUserInsightsPath, NUXT_PATHS } from "~~/lib/constants";
+import { cvschema } from "~~/lib/uploads/cv-schema";
 
 const { $csrfFetch } = useNuxtApp();
-const Insights = new UseInsights();
+const Insights = useInsights();
+const authStore = useAuthStore();
 
 async function onSubmit(event: FormSubmitEvent<CvSchema>) {
   Insights.cvState.csvFile = event.data.csvFile;
@@ -15,23 +18,28 @@ async function onSubmit(event: FormSubmitEvent<CvSchema>) {
   try {
     const csvDatas = await readCSVFile(event.data.csvFile);
     await processCSVData(csvDatas);
-    Insights.readFile = true;
+    Insights.readFile.value = true;
 
+    const userId = authStore.user?.id;
+    if (userId == null) {
+      return navigateTo(NUXT_PATHS.get("Insights"), { replace: true });
+    }
     return await navigateTo({
-      path: `/dashboard/report/${Insights.cvState.csvFile?.name}`,
+      path: buildUserInsightsPath(userId),
+      query: { name: Insights.cvState.csvFile?.name },
     });
   }
   catch (error: any) {
     Insights.handleErrors(error);
   }
   finally {
-    Insights.processing = false;
+    Insights.processing.value = false;
   }
 }
 
 async function readCSVFile(file: File): Promise<InsertSalesReport[]> {
   return new Promise((resolve, reject) => {
-    Insights.processing = true;
+    Insights.processing.value = true;
 
     Papa.parse(file, {
       header: true,
@@ -85,13 +93,18 @@ async function processCSVData(data: InsertSalesReport[]): Promise<void> {
 
 <template>
   <div>
-    <div class="mb-2">
-      <h1 class="text-2xl font-bold mb-2">
+    <div class="mb-4">
+      <h1 class="text-4xl font-bold mb-2">
         Sales Insights
       </h1>
-      <p class="text-sm">
-        This is the insights page! Here you can see your sales, specific trends over the months and more! Simply import your CSV file and you're good to go!
-      </p>
+      <div class="card bg-base-100 w-full shadow-sm p-4 mt-2">
+        <p class="text-sm font-bold">
+          This is the insights page!
+        </p>
+        <p class="text-sm">
+          Here you can see your sales, specific trends over the months and more! Simply import your CSV file (If you haven't already) and you're good to go!
+        </p>
+      </div>
     </div>
 
     <AppModal id="upload-csv-modal" title="Upload CSV">
@@ -105,7 +118,7 @@ async function processCSVData(data: InsertSalesReport[]): Promise<void> {
       <template #content>
         <div class="mt-4 flex justify-center mx-auto">
           <UForm
-            :schema="CvSchema"
+            :schema="cvschema"
             :state="Insights.cvState"
             class="space-y-4 w-64 bg-base-200 p-4 rounded-lg border-4 border-base-300"
             @submit="onSubmit($event)"
@@ -138,12 +151,20 @@ async function processCSVData(data: InsertSalesReport[]): Promise<void> {
                   {{ Insights.cvState.csvFile.name }}
 
                   <UButton
+                    v-if="!Insights.processing.value"
                     label="Remove"
                     class="btn btn-error btn-outline "
                     icon="tabler:trash"
                     @click="removeFile()"
                   />
                 </p>
+                <!-- If we're loading, show a loading spinner -->
+                <Icon
+                  v-if="Insights.processing.value"
+                  name="tabler:loader"
+                  class="animate-spin mx-auto mt-3"
+                  size="24"
+                />
               </UFileUpload>
             </UFormField>
             <UButton
@@ -151,7 +172,8 @@ async function processCSVData(data: InsertSalesReport[]): Promise<void> {
               label="Submit"
               class="btn btn-primary mx-auto block"
               icon="tabler:upload"
-              @click="Insights.hasPressedSubmit = true"
+              :disabled="Insights.processing.value"
+              @click="Insights.hasPressedSubmit.value = true"
             />
           </UForm>
         </div>
@@ -159,45 +181,24 @@ async function processCSVData(data: InsertSalesReport[]): Promise<void> {
     </AppModal>
 
     <div class="divider" />
-
-    <div class="bg-base-100 p-4 rounded-lg">
-      <div
-        v-if="Insights.hasError"
-        role="alert"
-        class="alert alert-error"
-      >
-        <Icon name="tabler:alert-circle" size="24" />
-        <span>{{ Insights.errorMsg }}</span>
-      </div>
-
-      <div
-        v-if="Insights.readFile"
-        role="alert"
-        class="alert alert-success"
-      >
-        <Icon name="tabler:check-circle" size="24" />
-        <span>File uploaded successfully!</span>
-      </div>
-
-      <div v-if="Insights.serverResponded" />
-    </div>
-    <!-- if no file has been uploaded, show a message -->
-    <!-- <div v-if="!readFile && !processing" class="mt-4 text-center">
-      <p class="text-sm text-muted">
-        Please upload a .CSV file to get started.
-      </p>
-    </div> -->
-
-    <!-- if results are in, show them off here... -->
-    <!-- <div
-      v-if="hasError"
+    <div
+      v-if="Insights.hasError.value"
       role="alert"
       class="alert alert-error"
     >
       <Icon name="tabler:alert-circle" size="24" />
-      <span>{{ errorMsg }}</span>
-    </div> -->
+      <span>{{ Insights.errorMsg.value }}</span>
+    </div>
+    <div
+      v-if="Insights.readFile.value && !Insights.processing.value"
+      role="alert"
+      class="alert alert-success mb-2"
+    >
+      <Icon name="tabler:check-circle" size="24" />
+      <span>File uploaded successfully!</span>
+    </div>
 
-    <!-- TODO: Show the already existing insights here, and make the upload button a modal... -->
+    <!-- Child route renders here (e.g. output.vue = report/charts) -->
+    <NuxtPage />
   </div>
 </template>

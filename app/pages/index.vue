@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { NUXT_PATHS } from "~~/lib/constants";
+
 const authStore = useAuthStore();
 </script>
 
@@ -15,7 +17,7 @@ const authStore = useAuthStore();
         <AuthButton v-if="!authStore.user" />
         <NuxtLink
           v-else
-          to="/dashboard"
+          :to="NUXT_PATHS.get('Dashboard')"
           class="btn btn-primary"
         >
           Start Dashboarding

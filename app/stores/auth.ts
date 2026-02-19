@@ -1,4 +1,5 @@
 import { createAuthClient } from "better-auth/vue";
+import { NUXT_PATHS } from "~~/lib/constants";
 
 const authClient = createAuthClient();
 
@@ -17,14 +18,26 @@ export const useAuthStore = defineStore("useAuthStore", () => {
     const { csrf } = useCsrf();
     const headers = new Headers();
     headers.append("csrf-token", csrf);
-    await authClient.signIn.social({
-      provider: "github",
-      callbackURL: "/dashboard",
-      errorCallbackURL: "/error",
-      fetchOptions: {
-        headers,
+
+    await authClient.signIn.social(
+      {
+        provider: "github",
+        callbackURL: NUXT_PATHS.get("Dashboard") as string,
+        // errorCallbackURL: NUXT_PATHS.get("Error") as string,
+        fetchOptions: {
+          headers,
+          // Trigger default error handling.
+          onError: (ctx) => {
+            throw createError({
+              statusCode: ctx.error.status || 500,
+              statusMessage: ctx.error.statusText || "Unknown error",
+              message: ctx.error.message || "An unknown error occurred",
+            });
+          },
+        },
       },
-    });
+
+    );
   }
 
   async function signOut() {
@@ -36,7 +49,7 @@ export const useAuthStore = defineStore("useAuthStore", () => {
         headers,
       },
     });
-    navigateTo("/");
+    navigateTo(NUXT_PATHS.get("Home") as string);
   }
 
   return {

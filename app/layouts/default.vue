@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 const seoStore = useSEOStore();
 const route = useRoute();
+const seo = computed(() => seoStore.getSEO(route.path));
 
 useSeoMeta({
-  title: seoStore.getSEO?.title,
-  description: seoStore.getSEO?.description,
-  ogTitle: seoStore.getSEO?.title,
-  ogDescription: seoStore.getSEO?.description,
+  title: computed(() => seo.value?.title),
+  description: computed(() => seo.value?.description),
+  ogTitle: computed(() => seo.value?.title),
+  ogDescription: computed(() => seo.value?.description),
   ogImage: "/favicon.png",
   ogUrl: route.fullPath,
-  twitterTitle: seoStore.getSEO?.title,
+  twitterTitle: computed(() => seo.value?.title),
   twitterImage: "/favicon.png",
-  twitterDescription: seoStore.getSEO?.description,
-  // twitterImage: seoStore.getSEO?.image,
+  twitterDescription: computed(() => seo.value?.description),
   twitterCard: "summary",
 });
 
